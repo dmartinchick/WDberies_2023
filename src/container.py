@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
 
 from src.config import logger
+from .database import Database
 
 
 class Container(containers.DeclarativeContainer):
@@ -10,4 +11,4 @@ class Container(containers.DeclarativeContainer):
 
     config = providers.Configuration(yaml_files=['config.yml'])
 
-
+    db = providers.Singleton(Database, db_url=config.db.url)
