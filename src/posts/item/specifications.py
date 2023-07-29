@@ -10,8 +10,3 @@ class ItemByIdSpecification(Specification):
 class ItemIsActiveSpecification(Specification):
     def is_satisfied(self, candidate=True):
         return Item.is_active == candidate
-
-
-class ItemIsInactiveSpecification(Specification):
-    def is_satisfied(self, candidate=False):
-        return Item.is_active == candidate
