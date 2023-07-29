@@ -20,10 +20,10 @@ class ItemRepository(BaseRepository):
     def list(self, spec: Specification | None = None) -> Iterator:
         if spec is None:
             with self.session_factory() as session:
-                return session.query(Item).all()
+                return session.query(Item).order_by(Item.point).all()
         else:
             with self.session_factory() as session:
-                return session.query(Item).filter(spec).all()
+                return session.query(Item).filter(spec).order_by(Item.point).all()
 
     def add(self, obj: Item) -> Item:
         with self.session_factory() as session:
