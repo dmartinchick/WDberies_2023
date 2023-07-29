@@ -17,7 +17,7 @@ class BaseRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def list(self, spec: Specification | None) -> Iterator:
+    def list(self, spec: Specification | None = None) -> Iterator:
         raise NotImplementedError
 
     @abstractmethod
