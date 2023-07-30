@@ -1,6 +1,6 @@
 from contextlib import contextmanager, AbstractContextManager
 from typing import Any
-from config import logger
+from src.config import logger
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, scoped_session, sessionmaker
