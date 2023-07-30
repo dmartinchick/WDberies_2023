@@ -13,3 +13,8 @@ router = APIRouter()
 @inject
 def get_all_items(item_service: ItemService = Depends(Provide[Container.item_service])):
     return item_service.get_items()
+
+
+@router.get("/status")
+def get_status():
+    return {'status': "Ok"}
