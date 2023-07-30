@@ -13,5 +13,5 @@ class Item(Base):
     img_url: Mapped[str] = mapped_column(nullable=True)
     is_active: Mapped[bool] = mapped_column(default=True)
     name: Mapped[str] = mapped_column(nullable=True)
-    point: Mapped[float] = mapped_column(default=300.0)
+    point: Mapped[float] = mapped_column(default=400.0)
     price: Mapped[float] = mapped_column(nullable=True)
