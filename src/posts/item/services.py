@@ -1,15 +1,13 @@
 from typing import Iterator
 
-from src.services import BaseServices
-
 from src.posts.item.repositories import ItemRepository
 from src.posts.item.schemas import Item
 from src.posts.item.specifications import ItemByIdSpecification, ItemIsActiveSpecification, ItemIsInactiveSpecification
 
 
-class ItemService(BaseServices):
+class ItemService:
     def __init__(self, item_repository: ItemRepository):
-        super().__init__(repository=item_repository)
+        self._repository = item_repository
 
     def get_item_by_id(self, item_id: int) -> Item:
         spec = ItemByIdSpecification().is_satisfied(item_id)
