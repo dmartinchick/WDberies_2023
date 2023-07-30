@@ -2,11 +2,14 @@ from fastapi import APIRouter, Depends, Response, status
 from dependency_injector.wiring import inject, Provide
 
 from src.container import Container
+from src.posts.item.services import ItemService
+from src.exceptions import ItemNotFoundErorr
 
 
 router = APIRouter()
 
 
-@router.get("/item")
-def get_items():
-    return {'item': "test_item"}
+@router.get("/items")
+@inject
+def get_all_items(item_service: ItemService = Depends(Provide[Container.item_service])):
+    return item_service.get_items()
