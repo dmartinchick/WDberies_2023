@@ -2,7 +2,7 @@ from typing import Iterator
 
 from src.posts.item.repositories import ItemRepository
 from src.posts.item.schemas import Item
-from src.posts.item.specifications import ItemByIdSpecification, ItemIsActiveSpecification, ItemIsInactiveSpecification
+from src.posts.item.specifications import ItemByIdSpecification, ItemIsActiveSpecification
 
 
 class ItemService:
