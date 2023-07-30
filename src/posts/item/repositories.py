@@ -1,5 +1,6 @@
 from typing import Iterator
 
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from src.posts.item.schemas import Item
@@ -20,10 +21,10 @@ class ItemRepository(BaseRepository):
     def list(self, spec: Specification | None = None) -> Iterator:
         if spec is None:
             with self.session_factory() as session:
-                return session.query(Item).order_by(Item.point).all()
+                return session.query(Item).order_by(desc(Item.point)).all()
         else:
             with self.session_factory() as session:
-                return session.query(Item).filter(spec).order_by(Item.point).all()
+                return session.query(Item).filter(spec).order_by(desc(Item.point)).all()
 
     def add(self, obj: Item) -> Item:
         with self.session_factory() as session:
