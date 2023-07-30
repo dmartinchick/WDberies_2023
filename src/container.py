@@ -10,7 +10,7 @@ from src.posts.item.services import ItemService
 class Container(containers.DeclarativeContainer):
     logger.info("Container was created!")
 
-    wiring_config = containers.WiringConfiguration(modules=["src.posts.item.roters"])
+    wiring_config = containers.WiringConfiguration(modules=["src.posts.item.routers"])
 
     config = providers.Configuration(yaml_files=['config.yml'])
 
