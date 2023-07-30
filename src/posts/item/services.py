@@ -25,3 +25,27 @@ class ItemService(BaseServices):
     def get_inactive_items(self) -> Iterator[Item]:
         spec = not ItemIsActiveSpecification().is_satisfied()
         return self._repository.list(spec)
+
+    def add_item(self,
+                 item_id: int,
+                 brand: str,
+                 img_url: str,
+                 name: str,
+                 price: str) -> Item:
+        item = Item(id=item_id, brand=brand, img_url=img_url, name=name, price=price)
+        return self._repository.add(item)
+
+    def update_item_point(self, item_id: int, new_point: float) -> Item:
+        item = self.get_item_by_id(item_id)
+        item.point = new_point
+        return self._repository.update(item)
+
+    def update_activate_item(self, item_id: int) -> Item:
+        item = self.get_item_by_id(item_id)
+        item.is_active = True
+        return self._repository.update(item)
+
+    def update_deactivate_item(self, item_id: int) -> Item:
+        item = self.get_item_by_id(item_id)
+        item.is_active = False
+        return self._repository.update(item)
