@@ -1,12 +1,14 @@
 from typing import Iterator
 
+from fastapi import Depends
+
 from src.posts.item.repositories import ItemRepository
 from src.posts.item.schemas import Item
 from src.posts.item.specifications import ItemByIdSpecification, ItemIsActiveSpecification
 
 
 class ItemService:
-    def __init__(self, item_repository: ItemRepository):
+    def __init__(self, item_repository: ItemRepository = Depends(ItemRepository)):
         self._repository = item_repository
 
     def get_item_by_id(self, item_id: int) -> Item:

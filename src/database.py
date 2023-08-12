@@ -1,6 +1,8 @@
 from contextlib import contextmanager, AbstractContextManager
 from typing import Any
-from src.config import logger
+from src.config import logger, get_sync_db_url
+
+from fastapi import Depends
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, scoped_session, sessionmaker
@@ -11,7 +13,7 @@ class Base(DeclarativeBase):
 
 
 class Database:
-    def __init__(self, db_url: str) -> None:
+    def __init__(self, db_url: str = Depends(get_sync_db_url)) -> None:
         self._engine = create_engine(url=db_url, echo=True)
         self._session_factory = scoped_session(sessionmaker(bind=self._engine))
 
@@ -29,3 +31,6 @@ class Database:
             raise
         finally:
             session.close()
+
+    def __call__(self, *args, **kwargs):
+        return self.session()
