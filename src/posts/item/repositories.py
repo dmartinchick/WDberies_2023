@@ -18,7 +18,7 @@ class ItemRepository(BaseRepository):
                 raise ItemNotFoundErorr()    # change to ItemNotFindException
             return item
 
-    def list(self, spec: Specification | None = None) -> Iterator:
+    def list(self, spec: Specification | None = None) -> list[Item]:
         if spec is None:
             with self.session_factory() as session:
                 return session.query(Item).order_by(desc(Item.point)).all()

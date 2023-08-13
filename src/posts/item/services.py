@@ -1,13 +1,15 @@
 from typing import Iterator
 
+import loguru
 from fastapi import Depends
 
 from src.posts.item.repositories import ItemRepository
 from src.posts.item.schemas import Item
 from src.posts.item.specifications import ItemByIdSpecification, ItemIsActiveSpecification
+from src.posts.item.specifications import ItemWithImg
 
 
-class ItemService:
+class ItemServices:
     def __init__(self, item_repository: ItemRepository = Depends(ItemRepository)):
         self._repository = item_repository
 
@@ -15,15 +17,20 @@ class ItemService:
         spec = ItemByIdSpecification().is_satisfied(item_id)
         return self._repository.get(spec)
 
-    def get_items(self) -> Iterator[Item]:
+    def get_items(self) -> list[Item]:
         return self._repository.list()
 
-    def get_active_items(self) -> Iterator[Item]:
+    def get_active_items(self) -> list[Item]:
         spec = ItemIsActiveSpecification().is_satisfied()
         return self._repository.list(spec=spec)
 
-    def get_inactive_items(self) -> Iterator[Item]:
-        spec = not ItemIsActiveSpecification().is_satisfied()
+    def get_inactive_items(self) -> list[Item]:
+        spec = ~ ItemIsActiveSpecification().is_satisfied()
+        loguru.logger.info(spec)
+        return self._repository.list(spec)
+
+    def get_items_with_img(self) -> list[Item]:
+        spec = ItemWithImg().is_satisfied()
         return self._repository.list(spec)
 
     def add_item(self,

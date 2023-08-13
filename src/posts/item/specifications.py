@@ -10,3 +10,8 @@ class ItemByIdSpecification(Specification):
 class ItemIsActiveSpecification(Specification):
     def is_satisfied(self, candidate=True):
         return Item.is_active == candidate
+
+
+class ItemWithImg(Specification):
+    def is_satisfied(self, candidate=None):
+        return Item.img_url != candidate
