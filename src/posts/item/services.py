@@ -39,7 +39,7 @@ class ItemServices:
                  brand: str,
                  img_url: str,
                  name: str,
-                 price: str) -> Item:
+                 price: float) -> Item:
         item = Item(id=item_id, brand=brand, img_url=img_url, name=name, price=price)
         return self._repository.add(item)
 

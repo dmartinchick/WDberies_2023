@@ -46,3 +46,13 @@ def get_all_inactive_items(item_services: ItemServices = Depends()):
 @router.get("/status")
 def get_status():
     return {'status': "Ok"}
+
+
+@router.post("/items/", response_model=ItemShema)
+def create_item(item: ItemShema, item_services: ItemServices = Depends()):
+    item_services.add_item(item_id=item.id,
+                           brand=item.brand,
+                           img_url=item.img_url,
+                           name=item.name,
+                           price=item.price)
+    return item

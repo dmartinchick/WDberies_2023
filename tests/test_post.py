@@ -51,6 +51,22 @@ class TestPositivePost:
         assert responce.status_code == 200
         assert isinstance(data, dict)
 
+    def test_create_item(self, client_test):
+        responce = client_test.post(
+            url="/items/",
+            json={"id": 100, "brand": "added_brand", "img_url": "http://added.com",
+                  "name": "i'm added", "price": 500.0})
+        assert responce.status_code == 200
+        responce_check = client_test.get("/items/item_id", params={"item_id": 100})
+        assert responce_check.status_code == 200
+        assert responce_check.json() == {"id": 100,
+                                         "brand": "added_brand",
+                                         "img_url": "http://added.com",
+                                         "name": "i'm added",
+                                         "is_active": True,
+                                         "point": 400.0,
+                                         "price": 500.0}
+
 #
 # class TestNegativePost:
 #     def test_get_all_items(self, client_test, prepare_database_without_data):
