@@ -121,6 +121,7 @@ celerybeat.pid
 
 # Environments
 .env
+.test.env
 .venv
 env/
 venv/
@@ -161,3 +162,7 @@ cython_debug/
 
 # config file
 config.yml
+
+
+# other file
+src/try.py
