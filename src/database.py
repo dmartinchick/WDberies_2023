@@ -1,36 +1,27 @@
 from contextlib import contextmanager, AbstractContextManager
-from typing import Any
-from src.config import logger, get_sync_db_url
+from src.config import logger, config
 
 from fastapi import Depends
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, scoped_session, sessionmaker
 
+engine = create_engine(url=config.db.url, echo=True)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 class Base(DeclarativeBase):
     pass
 
 
-class Database:
-    def __init__(self, db_url: str = Depends(get_sync_db_url)) -> None:
-        self._engine = create_engine(url=db_url, echo=True)
-        self._session_factory = scoped_session(sessionmaker(bind=self._engine))
-
-    def create_database(self) -> None:
-        Base.metadata.create_all(self._engine)
-
-    @contextmanager
-    def session(self) -> Any | AbstractContextManager[Session]:
-        session: Session = self._session_factory()
-        try:
-            yield session
-        except Exception:
-            logger.exception("Session rolback because of exeption")
-            session.rollback()
-            raise
-        finally:
-            session.close()
-
-    def __call__(self, *args, **kwargs):
-        return self.session()
+def get_session() -> Session:
+    session = SessionLocal()
+    try:
+        yield session
+    except Exception:
+        logger.exception("Session rolback because of exeption")
+        session.rollback()
+        raise
+    finally:
+        session.close()

@@ -1,17 +1,15 @@
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
-
-from src.database import Base
+from pydantic import BaseModel, Field
 
 
-class Item(Base):
+class Item(BaseModel):
 
-    __tablename__ = "items"
+    id: int
+    brand: str | None
+    img_url: str | None
+    is_active: bool = Field(default=True)
+    name: str | None
+    point: float = Field(default=400.0)
+    price: float | None
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    brand: Mapped[str] = mapped_column(nullable=True)
-    img_url: Mapped[str] = mapped_column(nullable=True)
-    is_active: Mapped[bool] = mapped_column(default=True)
-    name: Mapped[str] = mapped_column(nullable=True)
-    point: Mapped[float] = mapped_column(default=400.0)
-    price: Mapped[float] = mapped_column(nullable=True)
+    class Config:
+        orm_mode = True

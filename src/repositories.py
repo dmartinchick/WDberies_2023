@@ -7,13 +7,13 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from src.specification import Specification
-from src.database import Database
+from src.database import get_session
 
 
 class BaseRepository(ABC):
 
-    def __init__(self, session_factory: Any | AbstractContextManager[Session] = Depends(Database)):
-        self.session_factory = session_factory
+    def __init__(self, session: Session = Depends(get_session)):
+        self.session = session
 
     @abstractmethod
     def get(self, spec: Specification) -> Any:

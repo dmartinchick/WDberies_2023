@@ -1,5 +1,5 @@
 from src.specification import Specification
-from src.posts.item.schemas import Item
+from src.posts.item.models import Item
 
 
 class ItemByIdSpecification(Specification):

@@ -1,10 +1,10 @@
 from typing import Iterator
 
-import loguru
+from loguru import logger
 from fastapi import Depends
 
 from src.posts.item.repositories import ItemRepository
-from src.posts.item.schemas import Item
+from src.posts.item.models import Item
 from src.posts.item.specifications import ItemByIdSpecification, ItemIsActiveSpecification
 from src.posts.item.specifications import ItemWithImg
 
@@ -14,6 +14,7 @@ class ItemServices:
         self._repository = item_repository
 
     def get_item_by_id(self, item_id: int) -> Item:
+        # TODO: Обработать исключения если item не найден
         spec = ItemByIdSpecification().is_satisfied(item_id)
         return self._repository.get(spec)
 
@@ -25,9 +26,9 @@ class ItemServices:
         return self._repository.list(spec=spec)
 
     def get_inactive_items(self) -> list[Item]:
-        spec = ~ ItemIsActiveSpecification().is_satisfied()
-        loguru.logger.info(spec)
-        return self._repository.list(spec)
+        # TODO: не работает.
+        spec = ~ItemIsActiveSpecification().is_satisfied()
+        return self._repository.list(spec=spec)
 
     def get_items_with_img(self) -> list[Item]:
         spec = ItemWithImg().is_satisfied()
