@@ -4,7 +4,7 @@ import loguru
 from fastapi import APIRouter, Depends, Response, status
 
 from src.posts.item.services import ItemServices
-from src.exceptions import ItemNotFoundErorr
+from src.exceptions import ItemNotFoundErorr, NotEnoughItemsError
 from src.posts.item.schemas import Item as ItemShema
 
 
@@ -29,8 +29,7 @@ def get_random_items(item_services: ItemServices = Depends()):
         return random_items
     except ValueError as e:
         # loguru.logger.error(e)
-        raise ValueError("There are not enough elements in the database to select two random elements" + str(e))
-        # TODO: Обработать исключение
+        raise NotEnoughItemsError(e)
 
 
 @router.get("/items/item_id", response_model=ItemShema)
@@ -51,12 +50,15 @@ def get_status():
 @router.post("/items/", response_model=ItemShema)
 def create_item(item: ItemShema, item_services: ItemServices = Depends()):
     # TODO: Добавить проверку что фала с таким Id не существует
-    item_services.add_item(item_id=item.id,
-                           brand=item.brand,
-                           img_url=item.img_url,
-                           name=item.name,
-                           price=item.price)
-    return item
+    try:
+        item_services.get_item_by_id(item_id=item.id)
+    except ItemNotFoundErorr:
+        item_services.add_item(item_id=item.id,
+                               brand=item.brand,
+                               img_url=item.img_url,
+                               name=item.name,
+                               price=item.price)
+        return item
 
 
 @router.post("/items/{items}", response_model=ItemShema)

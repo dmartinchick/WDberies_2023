@@ -10,9 +10,9 @@ class ItemNotFoundErorr(NotFoundErorr):
     entity_name = "Item"
 
 
-class NotEnoughItems(Exception):
+class NotEnoughItemsError(Exception):
     def __init__(self, e):
-        super(NotEnoughItems, self).__init__(f"Don't enough items in database. {e}")
+        super(NotEnoughItemsError, self).__init__(f"Don't enough items in database. {e}")
 
 
 class WrongTypeError(ValueError):

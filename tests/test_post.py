@@ -6,7 +6,7 @@ from src.app import app
 from src.posts.item.schemas import Item as ItemShema
 from tests.conftest import client_test, prepare_database, prepare_database_without_data
 from tests.data_for_test import test_data
-from src.exceptions import ItemNotFoundErorr
+from src.exceptions import ItemNotFoundErorr, NotEnoughItemsError
 
 
 class TestPositivePost:
@@ -84,7 +84,7 @@ class TestNegativePost:
         assert data == []
 
     def test_get_random_items_if_do_not_enough_elements(self, client_test):
-        with pytest.raises(ValueError, match=r".* not enough elements .*"):
+        with pytest.raises(NotEnoughItemsError):
             responce = client_test.get("/items_random")
             data = responce.json()
             assert data == []
