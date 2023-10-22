@@ -64,4 +64,3 @@ class TData:
 
 
 test_data = TData(data_for_test)
-# TODO: реализовать отдачу тестовых данных через класс

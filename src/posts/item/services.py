@@ -2,11 +2,13 @@ from typing import Iterator
 
 from loguru import logger
 from fastapi import Depends
+from sqlalchemy.exc import NoResultFound
 
 from src.posts.item.repositories import ItemRepository
 from src.posts.item.models import Item
 from src.posts.item.specifications import ItemByIdSpecification, ItemIsActiveSpecification
 from src.posts.item.specifications import ItemWithImg
+from src.exceptions import ItemNotFoundErorr
 
 
 class ItemServices:
@@ -15,8 +17,11 @@ class ItemServices:
 
     def get_item_by_id(self, item_id: int) -> Item:
         # TODO: Обработать исключения если item не найден
-        spec = ItemByIdSpecification().is_satisfied(item_id)
-        return self._repository.get(spec)
+        try:
+            spec = ItemByIdSpecification().is_satisfied(item_id)
+            return self._repository.get(spec)
+        except NoResultFound:
+            raise ItemNotFoundErorr
 
     def get_items(self) -> list[Item]:
         return self._repository.list()
@@ -26,7 +31,6 @@ class ItemServices:
         return self._repository.list(spec=spec)
 
     def get_inactive_items(self) -> list[Item]:
-        # TODO: не работает.
         spec = ~ItemIsActiveSpecification().is_satisfied()
         return self._repository.list(spec=spec)
 

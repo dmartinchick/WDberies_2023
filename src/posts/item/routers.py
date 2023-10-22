@@ -29,7 +29,7 @@ def get_random_items(item_services: ItemServices = Depends()):
         return random_items
     except ValueError as e:
         # loguru.logger.error(e)
-        raise ValueError("В БД недостаточно элементов для выборки двух случайных элементов" + str(e))
+        raise ValueError("There are not enough elements in the database to select two random elements" + str(e))
         # TODO: Обработать исключение
 
 
@@ -50,9 +50,16 @@ def get_status():
 
 @router.post("/items/", response_model=ItemShema)
 def create_item(item: ItemShema, item_services: ItemServices = Depends()):
+    # TODO: Добавить проверку что фала с таким Id не существует
     item_services.add_item(item_id=item.id,
                            brand=item.brand,
                            img_url=item.img_url,
                            name=item.name,
                            price=item.price)
     return item
+
+
+@router.post("/items/{items}", response_model=ItemShema)
+def update_items_point(item_a: ItemShema, item_b: ItemShema, item_services: ItemServices = Depends()):
+    # TODO: реализовать elo
+    pass
