@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from enum import Enum
 
 
 class Item(BaseModel):
@@ -13,3 +14,24 @@ class Item(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Enemy(BaseModel):
+    enemy_id: int
+
+
+class Result(str, Enum):
+    ITEM_A_WIN = "item_a"
+    DRAW = "draw"
+    ITEM_B_WIN = "item_b"
+
+
+class BattleInfo(BaseModel):
+    current_id: int
+    enemy_id: int
+    result: Result
+
+
+class FightResult(BaseModel):
+    item_a: Item
+    item_b: Item

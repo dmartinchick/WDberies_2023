@@ -1,11 +1,13 @@
 import random
+from typing import List
 
 import loguru
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, Form
 
 from src.posts.item.services import ItemServices
 from src.exceptions import ItemNotFoundErorr, NotEnoughItemsError
-from src.posts.item.schemas import Item as ItemShema
+from src.posts.item.schemas import Item as ItemShema, Enemy, BattleInfo, FightResult
+from src.posts.utils import Elo
 
 
 router = APIRouter()
@@ -49,7 +51,6 @@ def get_status():
 
 @router.post("/items/", response_model=ItemShema)
 def create_item(item: ItemShema, item_services: ItemServices = Depends()):
-    # TODO: Добавить проверку что фала с таким Id не существует
     try:
         item_services.get_item_by_id(item_id=item.id)
     except ItemNotFoundErorr:
@@ -61,7 +62,24 @@ def create_item(item: ItemShema, item_services: ItemServices = Depends()):
         return item
 
 
-@router.post("/items/{items}", response_model=ItemShema)
-def update_items_point(item_a: ItemShema, item_b: ItemShema, item_services: ItemServices = Depends()):
-    # TODO: реализовать elo
-    pass
+@router.patch("/items_update/{item_id}", response_model=FightResult)
+def update_items_point(battle_info: BattleInfo, item_services: ItemServices = Depends()):
+
+    try:
+        item_a = item_services.get_item_by_id(battle_info.current_id)
+        item_b = item_services.get_item_by_id(battle_info.enemy_id)
+
+        elo = Elo(item_a_points=item_a.point, item_b_points=item_b.point)
+        battle_result = elo.calculate(battle_info.result)
+
+        item_a.point = battle_result.get("item_a")
+        item_b.point = battle_result.get("item_b")
+
+        item_services.update_item_point(item=item_a)
+        item_services.update_item_point(item=item_b)
+        update_item_a = item_services.get_item_by_id(item_a.id)
+        update_item_b = item_services.get_item_by_id(item_b.id)
+        return {"item_a": update_item_a, "item_b": update_item_b}
+
+    except ItemNotFoundErorr:
+        raise ItemNotFoundErorr()

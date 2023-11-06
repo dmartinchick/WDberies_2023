@@ -47,9 +47,7 @@ class ItemServices:
         item = Item(id=item_id, brand=brand, img_url=img_url, name=name, price=price)
         return self._repository.add(item)
 
-    def update_item_point(self, item_id: int, new_point: float) -> Item:
-        item = self.get_item_by_id(item_id)
-        item.point = new_point
+    def update_item_point(self, item: Item) -> Item:
         return self._repository.update(item)
 
     def update_activate_item(self, item_id: int) -> Item:

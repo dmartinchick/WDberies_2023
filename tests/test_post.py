@@ -1,12 +1,16 @@
+import json
+
+import loguru
 import pytest
 import random
 
 from src.config import logger
 from src.app import app
-from src.posts.item.schemas import Item as ItemShema
+from src.posts.item.schemas import Item as ItemShema, Result, BattleInfo
+from src.exceptions import ItemNotFoundErorr, NotEnoughItemsError
+from src.posts.utils import Elo
 from tests.conftest import client_test, prepare_database, prepare_database_without_data
 from tests.data_for_test import test_data
-from src.exceptions import ItemNotFoundErorr, NotEnoughItemsError
 
 
 class TestPositivePost:
@@ -51,7 +55,7 @@ class TestPositivePost:
                                  (2, 200),
                                  ("str", 422)
                              ])
-    def test_get_item_by_id(self, client_test, item_id, expected_status_code):
+    def test_get_item_by_id(self, client_test, item_id: int, expected_status_code):
         responce = client_test.get("/items/item_id", params={"item_id": item_id})
         data = responce.json()
         assert responce.status_code == expected_status_code
@@ -73,8 +77,18 @@ class TestPositivePost:
                                          "point": 400.0,
                                          "price": 500.0}
 
-    def test_update_item(self, client_test):
-        pass
+    @pytest.mark.parametrize(
+        "battle_info, expected_status_code",
+        [
+            ({"current_id": 1, "enemy_id": 2, "result": Result.ITEM_A_WIN}, 200),
+        ]
+    )
+    def test_update_item_points(self, client_test, battle_info: BattleInfo, expected_status_code):
+        responce = client_test.patch(
+            url="/items_update/1",
+            json=battle_info
+        )
+        assert responce.status_code == expected_status_code
 
 
 class TestNegativePost:
