@@ -59,7 +59,6 @@ class TData:
         return counter
 
     def __item_counter(self) -> int:
-        loguru.logger.info(len(self.data))
         return len(self.data)
 
 

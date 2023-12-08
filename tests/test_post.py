@@ -3,11 +3,12 @@ import json
 import loguru
 import pytest
 import random
+from fastapi import HTTPException
 
 from src.config import logger
 from src.app import app
 from src.posts.item.schemas import Item as ItemShema, Result, BattleInfo
-from src.exceptions import ItemNotFoundErorr, NotEnoughItemsError
+from src.exceptions import ItemNotFoundException, NotEnoughItemsException
 from src.posts.utils import Elo
 from tests.conftest import client_test, prepare_database, prepare_database_without_data
 from tests.data_for_test import test_data
@@ -53,7 +54,8 @@ class TestPositivePost:
                              [
                                  (1, 200),
                                  (2, 200),
-                                 ("str", 422)
+                                 ("str", 422),
+                                 (500, 404)
                              ])
     def test_get_item_by_id(self, client_test, item_id: int, expected_status_code):
         responce = client_test.get("/items/item_id", params={"item_id": item_id})
@@ -66,7 +68,7 @@ class TestPositivePost:
             url="/items/",
             json={"id": 100, "brand": "added_brand", "img_url": "http://added.com",
                   "name": "i'm added", "price": 500.0})
-        assert responce.status_code == 200
+        assert responce.status_code == 201
         responce_check = client_test.get("/items/item_id", params={"item_id": 100})
         assert responce_check.status_code == 200
         assert responce_check.json() == {"id": 100,
@@ -91,27 +93,17 @@ class TestPositivePost:
         assert responce.status_code == expected_status_code
 
 
-class TestNegativePost:
+class TestsWithEmptyDB:
     def test_get_all_items(self, client_test, prepare_database_without_data):
         responce = client_test.get("/items")
         data = responce.json()
         assert data == []
 
     def test_get_random_items_if_do_not_enough_elements(self, client_test):
-        with pytest.raises(NotEnoughItemsError):
+        with pytest.raises(NotEnoughItemsException):
             responce = client_test.get("/items_random")
             data = responce.json()
             assert data == []
-
-    @pytest.mark.parametrize("item_id, expected_error",
-                             [
-                                 (500, ItemNotFoundErorr),
-                             ])
-    def test_get_item_by_id_not_found(self, client_test, item_id, expected_error, prepare_database):
-        with pytest.raises(expected_error):
-            responce = client_test.get("/items/item_id", params={'item_id': item_id})
-            data = responce.json()
-            logger.info(data)
 
     def test_get_all_active_items_without_data(self, client_test):
         responce = client_test.get("/items_is_active")

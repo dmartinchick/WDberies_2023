@@ -1,14 +1,14 @@
 from typing import Iterator
 
 from loguru import logger
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy.exc import NoResultFound
 
 from src.posts.item.repositories import ItemRepository
 from src.posts.item.models import Item
 from src.posts.item.specifications import ItemByIdSpecification, ItemIsActiveSpecification
 from src.posts.item.specifications import ItemWithImg
-from src.exceptions import ItemNotFoundErorr
+from src.exceptions import ItemNotFoundException
 
 
 class ItemServices:
@@ -16,12 +16,9 @@ class ItemServices:
         self._repository = item_repository
 
     def get_item_by_id(self, item_id: int) -> Item:
-        # TODO: Обработать исключения если item не найден
-        try:
-            spec = ItemByIdSpecification().is_satisfied(item_id)
-            return self._repository.get(spec)
-        except NoResultFound:
-            raise ItemNotFoundErorr
+        spec = ItemByIdSpecification().is_satisfied(item_id)
+        item = self._repository.get(spec)
+        return item
 
     def get_items(self) -> list[Item]:
         return self._repository.list()

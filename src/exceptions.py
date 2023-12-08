@@ -1,18 +1,18 @@
 
-class NotFoundErorr(Exception):
+class NotFoundException(Exception):
     entity_name: str
 
     def __init__(self):
         super().__init__(f"{self.entity_name} not found")
 
 
-class ItemNotFoundErorr(NotFoundErorr):
+class ItemNotFoundException(NotFoundException):
     entity_name = "Item"
 
 
-class NotEnoughItemsError(Exception):
+class NotEnoughItemsException(Exception):
     def __init__(self, e):
-        super(NotEnoughItemsError, self).__init__(f"Don't enough items in database. {e}")
+        super(NotEnoughItemsException, self).__init__(f"Don't enough items in database. {e}")
 
 
 class WrongTypeError(ValueError):
