@@ -1,7 +1,7 @@
 import loguru
 import pytest
 from src.posts.item.schemas import Item as ItemSchemas, Result
-from src.posts.utils import Elo
+from src.posts.utils.elo import Elo
 from src.exceptions import WrongTypeError
 
 

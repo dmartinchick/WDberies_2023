@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Response, status, Form, HTTPException
 from src.posts.item.services import ItemServices
 from src.exceptions import ItemNotFoundException, NotEnoughItemsException
 from src.posts.item.schemas import Item as ItemShema, Enemy, BattleInfo, FightResult
-from src.posts.utils import Elo
+from src.posts.utils.elo import Elo
 
 
 router = APIRouter()

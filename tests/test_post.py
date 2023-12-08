@@ -9,7 +9,7 @@ from src.config import logger
 from src.app import app
 from src.posts.item.schemas import Item as ItemShema, Result, BattleInfo
 from src.exceptions import ItemNotFoundException, NotEnoughItemsException
-from src.posts.utils import Elo
+from src.posts.utils.elo import Elo
 from tests.conftest import client_test, prepare_database, prepare_database_without_data
 from tests.data_for_test import test_data
 
